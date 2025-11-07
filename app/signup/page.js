@@ -1,15 +1,18 @@
 "use client";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [name,setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log("Login Data:", { email, password });
-    // Later: API call + token store + redirect
+   toast.success("Signup Successful! Now Login.");
+    router.push("/login");
   };
 
   return (
@@ -58,7 +61,7 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition cursor-pointer"
           >
             SignUp
           </button>

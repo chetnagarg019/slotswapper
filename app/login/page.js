@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,9 +15,13 @@ export default function LoginPage() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log("Login Data:", { email, password });
+    localStorage.setItem("isLoggedIn", "true");
+    toast.success("Login succesfull");
+    router.push("/dashboard");
     // Later: API call + token store + redirect
   };
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -51,7 +56,7 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition cursor-pointer"
           >
             Login
           </button>
@@ -60,7 +65,7 @@ export default function LoginPage() {
 
         <p onClick={handleClick} className="text-center mt-4 text-sm">
           Don’t have an account?{" "}
-          <a href="/signup" className="text-blue-600 hover:underline">
+          <a href="/signup" className="text-blue-600 hover:underline cursor-pointer">
             Signup
           </a>
         </p>
