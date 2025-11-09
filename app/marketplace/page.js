@@ -233,41 +233,147 @@
 // }
 
 
+// "use client";
+
+// import { useState, useEffect } from "react";
+// import toast from "react-hot-toast";
+// import Link from "next/link";
+
+// export default function MarketplacePage() {
+//   const [events, setEvents] = useState([]);
+//   const [requests, setRequests] = useState([]);
+
+//   const currentUser = typeof window !== "undefined"
+//     ? JSON.parse(localStorage.getItem("user") || "null")
+//     : null;
+
+//   const userEmail = currentUser?.email;
+
+//   useEffect(() => {
+//     const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
+//     // ✅ Marketplace me sirf SWAPPABLE slots hi dikhne chahiye
+//     setEvents(storedEvents.filter(e => e.status === "SWAPPABLE"));
+
+//     const storedRequests = JSON.parse(localStorage.getItem("swapRequests")) || [];
+//     setRequests(storedRequests);
+//   }, []);
+
+//   const handleRequest = (event) => {
+//     if (!userEmail) {
+//       toast.error("Please login first!");
+//       return;
+//     }
+
+//     const newReq = {
+//       id: Date.now(),
+//       from: userEmail,
+//       to: event.owner, // jisne post kiya
+//       offered: event.title,
+//       requested: `${event.start} - ${event.end}`,
+//       status: "Pending"
+//     };
+
+//     const updatedReq = [...requests, newReq];
+//     setRequests(updatedReq);
+//     localStorage.setItem("swapRequests", JSON.stringify(updatedReq));
+
+//     toast.success("Swap Request Sent ✅");
+//   };
+
+//   return (
+//     <div className="p-6">
+//       <div className="flex justify-between items-center mb-4">
+//         <h1 className="text-2xl font-bold">Marketplace</h1>
+//         <Link href="/requests" className="px-4 py-2 bg-slate-700 text-white rounded">
+//           View Requests
+//         </Link>
+//       </div>
+
+//       {events.length === 0 ? (
+//         <p>No swappable slots available.</p>
+//       ) : (
+//         <table className="w-full border">
+//           <thead>
+//             <tr className="bg-gray-200">
+//               <th className="border p-2">Slot</th>
+//               <th className="border p-2">Time</th>
+//               <th className="border p-2">Owner</th>
+//               <th className="border p-2">Action</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {events.map(event => (
+//               <tr key={event.id} className="bg-yellow-100">
+//                 <td className="border p-2">{event.title}</td>
+//                 <td className="border p-2">{event.start} - {event.end}</td>
+//                 <td className="border p-2">{event.owner}</td>
+//                 <td className="border p-2">
+//                   <button
+//                     onClick={() => handleRequest(event)}
+//                     className="px-3 py-1 bg-indigo-600 text-white rounded"
+//                   >
+//                     Request Swap
+//                   </button>
+//                 </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       )}
+//     </div>
+//   );
+// }
+
+
 "use client";
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function MarketplacePage() {
   const [events, setEvents] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [clickedEvents, setClickedEvents] = useState([]);
+
+  const router = useRouter();
 
   const currentUser = typeof window !== "undefined"
     ? JSON.parse(localStorage.getItem("user") || "null")
     : null;
 
   const userEmail = currentUser?.email;
+  const userName = currentUser?.name; // Assuming user object has "name"
 
   useEffect(() => {
     const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
-    // ✅ Marketplace me sirf SWAPPABLE slots hi dikhne chahiye
     setEvents(storedEvents.filter(e => e.status === "SWAPPABLE"));
 
     const storedRequests = JSON.parse(localStorage.getItem("swapRequests")) || [];
     setRequests(storedRequests);
+
+    // Get previously clicked event ids (so buttons remain disabled on refresh)
+    const clicked = JSON.parse(localStorage.getItem("clickedEvents")) || [];
+    setClickedEvents(clicked);
   }, []);
 
   const handleRequest = (event) => {
-    if (!userEmail) {
-      toast.error("Please login first!");
-      return;
-    }
+    // if (!userEmail) {
+    //   toast.error("Please login first!");
+    //   return;
+    // }
 
+    // Disable the button
+    const updatedClicked = [...clickedEvents, event.id];
+    setClickedEvents(updatedClicked);
+    localStorage.setItem("clickedEvents", JSON.stringify(updatedClicked));
+
+    // Create new request
     const newReq = {
       id: Date.now(),
-      from: userEmail,
-      to: event.owner, // jisne post kiya
+      from: userName || userEmail, // Who sent the request
+      to: event.ownerName || event.owner, // Owner's name
       offered: event.title,
       requested: `${event.start} - ${event.end}`,
       status: "Pending"
@@ -278,6 +384,9 @@ export default function MarketplacePage() {
     localStorage.setItem("swapRequests", JSON.stringify(updatedReq));
 
     toast.success("Swap Request Sent ✅");
+
+    // Navigate to /requests page
+    router.push("/requests");
   };
 
   return (
@@ -297,7 +406,7 @@ export default function MarketplacePage() {
             <tr className="bg-gray-200">
               <th className="border p-2">Slot</th>
               <th className="border p-2">Time</th>
-              <th className="border p-2">Owner</th>
+              {/* <th className="border p-2">Owner</th> */}
               <th className="border p-2">Action</th>
             </tr>
           </thead>
@@ -306,11 +415,12 @@ export default function MarketplacePage() {
               <tr key={event.id} className="bg-yellow-100">
                 <td className="border p-2">{event.title}</td>
                 <td className="border p-2">{event.start} - {event.end}</td>
-                <td className="border p-2">{event.owner}</td>
+                {/* <td className="border p-2">{event.ownerName || event.owner}</td> */}
                 <td className="border p-2">
                   <button
                     onClick={() => handleRequest(event)}
-                    className="px-3 py-1 bg-indigo-600 text-white rounded"
+                    className="px-3 py-1 bg-indigo-600 text-white rounded disabled:bg-gray-400 cursor-pointer"
+                    disabled={clickedEvents.includes(event.id)}
                   >
                     Request Swap
                   </button>
@@ -323,4 +433,5 @@ export default function MarketplacePage() {
     </div>
   );
 }
+
 

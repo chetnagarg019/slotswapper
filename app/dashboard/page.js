@@ -146,6 +146,7 @@
   // }
 
 
+
   "use client";
 
 import { useState, useEffect } from "react";
@@ -215,13 +216,13 @@ export default function DashboardPage() {
         <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
 
         <div className="flex gap-3">
-          <Link href="/marketplace" className="px-4 py-2 bg-indigo-600 text-white rounded">Marketplace</Link>
-          <Link href="/requests" className="px-4 py-2 bg-emerald-600 text-white rounded">Requests</Link>
+          <Link href="/marketplace" className="px-4 py-2 bg-indigo-600 text-white rounded cursor-pointer">Marketplace</Link>
+          <Link href="/requests" className="px-4 py-2 bg-emerald-600 text-white rounded cursor-pointer">Requests</Link>
 
           {!isLoggedIn && (
             <>
-              <Link href="/login" className="px-4 py-2 bg-slate-700 text-white rounded">Login</Link>
-              <Link href="/signup" className="px-4 py-2 bg-amber-600 text-white rounded">Signup</Link>
+              <Link href="/login" className="px-4 py-2 bg-slate-700 text-white rounded cursor-pointer">Login</Link>
+              <Link href="/signup" className="px-4 py-2 bg-amber-600 text-white rounded cursor-pointer">Signup</Link>
             </>
           )}
 
@@ -255,7 +256,7 @@ export default function DashboardPage() {
                 <td className="p-3 border-t">{event.start}</td>
                 <td className="p-3 border-t">{event.end}</td>
                 <td className="p-3 border-t">
-                  <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                  <span className={`px-2 py-1 rounded text-xs font-semibold  cursor-pointer ${
                     event.status === "BUSY" ? "bg-rose-100 text-rose-700" :
                     event.status === "FREE" ? "bg-emerald-100 text-emerald-700" :
                     "bg-yellow-100 text-yellow-700"
@@ -264,9 +265,9 @@ export default function DashboardPage() {
                   </span>
                 </td>
                 <td className="p-3 border-t flex gap-2">
-                  <button onClick={() => handleEdit(event)} className="px-3 py-1 bg-indigo-600 text-white text-xs rounded">Edit</button>
-                  <button onClick={() => handleDelete(event.id)} className="px-3 py-1 bg-rose-600 text-white text-xs rounded">Delete</button>
-                  <button onClick={() => handleSwap(event)} className="px-3 py-1 bg-emerald-600 text-white text-xs rounded">Make Swappable</button>
+                  <button onClick={() => handleEdit(event)} className="px-3 py-1 bg-indigo-600 text-white text-xs rounded cursor-pointer">Edit</button>
+                  <button onClick={() => handleDelete(event.id)} className="px-3 py-1 bg-rose-600 text-white text-xs rounded cursor-pointer">Delete</button>
+                  <button onClick={() => handleSwap(event)} className="px-3 py-1 bg-emerald-600 text-white text-xs rounded cursor-pointer">Make Swappable</button>
                 </td>
               </tr>
             ))}
